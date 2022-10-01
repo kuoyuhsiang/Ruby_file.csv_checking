@@ -20,7 +20,11 @@ RSpec.describe TableInfo do
     end
 
     it 'returns array of column names' do
+      p "+" * 100
+      p info
+      p "+" * 100
       expect(subject).to be_kind_of(Array)
+      
     end
 
     it 'detected time field based on type definition in schema' do

@@ -12,10 +12,24 @@ class TableInfo
   end
 
   def timestamp_columns
+    has_timestamp = []
+    @schema.each do |n|
+       if n[1][:type] == "datetime"
+        has_timestamp.push(n)
+       end
+    end
+    has_timestamp
     # TODO
   end
 
   def not_null_columns
+    not_null = []
+    @schema.each do |n|
+      if n[1][:null] == false 
+        not_null.push(n[0])
+       end
+   end
+   not_null
     # TODO
   end
 
