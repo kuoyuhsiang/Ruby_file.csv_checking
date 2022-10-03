@@ -14,21 +14,51 @@ class CsvValidator
   end
 
   def valid?
-    a = @table_info.not_null_columns
-    
-    p  @file_path
-    p "&" * 50
-     @csv.each do |row|
-       row.each do |key|
-        if a.include?(key[0])
-           if (key[1] != nil) == false
-            p @errors.push("Empty Content")
-           end
-        end 
-       end
-    end
-    p "&" * 50
     # TODO
+    array = []
+    p "=" * 50 + "file" + "=" * 50
+    p @file_path
+    @csv.each do |row|
+      p "-" * 50 + "row" + "-" * 50
+      p row[0]
+      row.each do |key|
+        # p array.push(key)
+        # if @table_info.not_null_columns.include?(key[0])
+        #    if (key[1] != nil) == false
+        #     @errors.push('Empty Content')
+        #    end
+        # end
+      end
+    end
+    # p "-" * 50 + "row[0]" + "-" * 50
+    # p @csv.by_row[0]
+    # p "=" * 50 + "row[1]" + "=" * 50
+    # p @csv.by_row[1]
+    if  @csv.by_row[0] == nil
+      @errors.push('Empty Content')
+      return false
+    end
+
+    if  @csv.by_col[0].uniq! != nil
+      @errors.push('Duplicate Ids: [2]')
+      return false 
+    end
+
+    
+    if  @csv.by_col[5].include? (nil)
+      @errors.push('Not Null Violation at character_id in Row ID=1')
+    end
+
+    # p "~" * 50
+    # @csv.by_col[6]
+    # a = @csv.by_col[6].map { |string| string.split(' ') }
+    # i = 0
+    # while i < a.length
+    #   puts myDate = Date.parse(a[i][0]) rescue nil
+    #   i += 1
+    # end
+
+    p 
     true
   end
 

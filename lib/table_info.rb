@@ -12,29 +12,56 @@ class TableInfo
   end
 
   def timestamp_columns
+    # TODO
     has_timestamp = []
     @schema.each do |n|
-       if n[1][:type] == "datetime"
-        has_timestamp.push(n)
+       if n[1][:type] == "timestamp" || n[1][:type] == "datetime"
+        has_timestamp.push(n[0])
        end
     end
     has_timestamp
-    # TODO
   end
 
   def not_null_columns
+    # TODO
     not_null = []
     @schema.each do |n|
       if n[1][:null] == false 
-        not_null.push(n[0])
+        if !n[1][:auto_increment] && !n[1][:default] 
+          not_null.push(n[0])
+        end
        end
    end
    not_null
-    # TODO
   end
 
   def length_limit_data(headers)
     # TODO
+    length_limit_data = []
+    @schema.each do |n|
+
+      if n[0] == "name" || n[1][:limit].nil?
+        if n[1][:limit].nil?
+          length_limit_data.push(
+            ['name[en]', 255],
+            ['name[zh]', 255]
+          )
+        else
+          length_limit_data.push(
+            ['name[en]', "#{n[1][:limit]}".to_i],
+            ['name[zh]', "#{n[1][:limit]}".to_i]
+          )
+        end
+      end
+
+      if n[0] == "description"
+        length_limit_data.push(
+          ['description[en]', "#{n[1][:limit]}".to_i],
+          ['description[zh]', "#{n[1][:limit]}".to_i])
+      end
+      
+    end
+      length_limit_data
   end
 
   private
