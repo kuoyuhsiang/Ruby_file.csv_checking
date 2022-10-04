@@ -31,37 +31,21 @@ class TableInfo
           not_null.push(n[0])
         end
        end
-   end
+    end
    not_null
   end
 
   def length_limit_data(headers)
     # TODO
     length_limit_data = []
-    @schema.each do |n|
-
-      if n[0] == "name" || n[1][:limit].nil?
-        if n[1][:limit].nil?
-          length_limit_data.push(
-            ['name[en]', 255],
-            ['name[zh]', 255]
-          )
-        else
-          length_limit_data.push(
-            ['name[en]', "#{n[1][:limit]}".to_i],
-            ['name[zh]', "#{n[1][:limit]}".to_i]
-          )
-        end
-      end
-
-      if n[0] == "description"
-        length_limit_data.push(
-          ['description[en]', "#{n[1][:limit]}".to_i],
-          ['description[zh]', "#{n[1][:limit]}".to_i])
-      end
-      
+    default_limit = 255
+    matched_header = headers.select { |n| n.match(/\[/)}
+    matched_header.each do |col|
+      title = col.split('[')[0]
+      limit_character = @schema["#{title}"][:limit] || default_limit
+      length_limit_data.push([col, limit_character])
     end
-      length_limit_data
+    length_limit_data
   end
 
   private

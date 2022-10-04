@@ -15,19 +15,18 @@ class CsvValidator
 
   def valid?
     # TODO
-    array = []
     p "=" * 50 + "file" + "=" * 50
     p @file_path
     @csv.each do |row|
-      p "-" * 50 + "row" + "-" * 50
-      p row[0]
+      id = row[0]
       row.each do |key|
-        # p array.push(key)
-        # if @table_info.not_null_columns.include?(key[0])
-        #    if (key[1] != nil) == false
-        #     @errors.push('Empty Content')
-        #    end
-        # end
+        if @table_info.timestamp_columns.include?(key[0])
+          begin
+            myDate = DateTime.strptime(key[1], "%Y-%m-%d %H:%M:%S")
+          rescue 
+            @errors.push("Time Format Violation at #{key[0]} in Row ID=#{id}")
+          end
+        end
       end
     end
     # p "-" * 50 + "row[0]" + "-" * 50
@@ -40,7 +39,9 @@ class CsvValidator
     end
 
     if  @csv.by_col[0].uniq! != nil
-      @errors.push('Duplicate Ids: [2]')
+      id_column = @csv.by_col[0]
+      id = id_column.detect{ |e| id_column.count(e) > 1 }
+      @errors.push("Duplicate Ids: [#{id}]")
       return false 
     end
 
