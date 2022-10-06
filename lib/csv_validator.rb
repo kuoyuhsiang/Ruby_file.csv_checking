@@ -18,20 +18,16 @@ class CsvValidator
 
   def valid?
     # TODO
-
-    Empty_Content?(@csv)
-
-    Id_Duplicate?(@csv)
-
+    empty_content?(@csv)
+    id_duplicate?(@csv)
     @csv.each do |row|
       id = row[0]
       row.each do |key|
-        Time_Format?(key, id)
-        Length_Limit_Violation?(key, id)
-        Not_Null_Violation?(key, id)
+        time_format_violation?(key, id)
+        length_limit_violation?(key, id)
+        not_null_violation?(key, id)
       end
     end
-
     @errors.empty?
   end
 
@@ -39,11 +35,11 @@ class CsvValidator
 
   # TODO, implement any private methods you need
 
-  def Empty_Content?(csv)
+  def empty_content?(csv)
     @errors.push('Empty Content') if csv.empty?
   end
 
-  def Id_Duplicate?(csv)
+  def id_duplicate?(csv)
     unless csv.by_col[0].uniq!.nil?
       id_column = csv.by_col[0]
       @id = id_column.detect { |e| id_column.count(e) > 1 }
@@ -51,7 +47,7 @@ class CsvValidator
     end
   end
 
-  def Time_Format?(key, id)
+  def time_format_violation?(key, id)
     if @table_info.timestamp_columns.include?(key[0])
       begin
         DateTime.strptime(key[1], '%Y-%m-%d %H:%M:%S')
@@ -61,7 +57,7 @@ class CsvValidator
     end
   end
 
-  def Length_Limit_Violation?(key, id)
+  def length_limit_violation?(key, id)
     @table_info.length_limit_data(@header).each do |colume_title|
       next unless colume_title[0].include?(key[0])
 
@@ -71,7 +67,7 @@ class CsvValidator
     end
   end
 
-  def Not_Null_Violation?(key, id)
+  def not_null_violation?(key, id)
     @errors.push("Not Null Violation at character_id in Row ID=#{id}") if key[1].nil?
   end
 end
