@@ -40,7 +40,7 @@ class CsvValidator
   end
 
   def id_duplicate?(csv)
-    unless csv.by_col[0].uniq!.nil?
+    if csv.by_col[0].uniq! != nil
       id_column = csv.by_col[0]
       @id = id_column.detect { |e| id_column.count(e) > 1 }
       @errors.push("Duplicate Ids: [#{@id}]")
